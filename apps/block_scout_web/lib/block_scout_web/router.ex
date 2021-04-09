@@ -42,19 +42,19 @@ defmodule BlockScoutWeb.Router do
       analyze_complexity: true,
       max_complexity: @max_complexity
     )
+
+    scope "/", BlockScoutWeb do
+      pipe_through(:browser)
+
+      get("/api-docs", APIDocsController, :index)
+      get("/eth-rpc-api-docs", APIDocsController, :eth_rpc)
+    end
   else
     scope "/", BlockScoutWeb do
       pipe_through(:browser)
       get("/api-docs", PageNotFoundController, :index)
       get("/eth-rpc-api-docs", PageNotFoundController, :index)
     end
-  end
-
-  scope "/", BlockScoutWeb do
-    pipe_through(:browser)
-
-    get("/api-docs", APIDocsController, :index)
-    get("/eth-rpc-api-docs", APIDocsController, :eth_rpc)
   end
 
   url_params = Application.get_env(:block_scout_web, BlockScoutWeb.Endpoint)[:url]
