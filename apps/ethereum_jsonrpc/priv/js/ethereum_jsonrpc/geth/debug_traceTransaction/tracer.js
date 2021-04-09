@@ -232,7 +232,7 @@
                 call.valueBigInt = bigInt.zero;
                 break;
             default:
-                throw 'Unknown custom call op ' + op;
+                throw "Unknown custom call op " + op;
         }
 
         this.callStack.push(call);
@@ -345,11 +345,7 @@
             result.error = error
         } else {
             result.createdContractAddressHash = toHex(ctx.to);
-            if (toHex(ctx.input) != '0x') {
-              result.createdContractCode = toHex(db.getCode(ctx.to));
-            } else {
-              result.createdContractCode = '0x';
-            }
+            result.createdContractCode = toHex(db.getCode(ctx.to));
         }
     },
 
