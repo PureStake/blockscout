@@ -9,8 +9,8 @@ export SUPPORTED_CHAINS='[{"title":"Moonbase","url":"https://blockscout.com/moon
 # required
 export COIN="DAI"
 export ETHEREUM_JSONRPC_VARIANT="geth"
-export ETHEREUM_JSONRPC_HTTP_URL="http://localhost:9990"
-export ETHEREUM_JSONRPC_WS_URL="ws://localhost:9991"
+export ETHEREUM_JSONRPC_HTTP_URL="http://localhost:9933"
+export ETHEREUM_JSONRPC_WS_URL="ws://localhost:9944"
 export DB_USER="postgres"
 export DB_PASS=""
 export DB_CONNECTION_STRING="postgresql://$DB_USER:$DB_PASS@localhost:5432/explorer"
