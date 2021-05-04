@@ -1,9 +1,14 @@
 SYSTEM = $(shell uname -s)
 HOST = host.docker.internal
-DOCKER_IMAGE = blockscout_prod
 BS_CONTAINER_NAME = blockscout
 PG_CONTAINER_NAME = postgres
 PG_CONTAINER_IMAGE = postgres:12.5
+
+# be able to select the blockscout iamge to use here
+ifndef DOCKER_IMAGE
+	DOCKER_IMAGE = blockscout_prod
+endif
+
 THIS_FILE = $(lastword $(MAKEFILE_LIST))
 
 ifeq ($(SYSTEM), Linux)
