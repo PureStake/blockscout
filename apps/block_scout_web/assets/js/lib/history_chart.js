@@ -82,6 +82,7 @@ const config = {
       numTransactions: {
         position: 'right',
         grid: grid,
+        min: 0,
         ticks: {
           beginAtZero: true,
           callback: (value, _index, _values) => formatValue(value),
