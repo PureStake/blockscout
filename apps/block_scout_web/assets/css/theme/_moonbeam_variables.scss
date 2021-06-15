@@ -1,16 +1,16 @@
 // general
-$primary: #131B34;
-$secondary: #D3347B;
-$tertiary: #74C9C9;
-$quaternary: #F6BF60;
-$quinary: #17263D;
+$primary: #0D1126;
+$secondary: #E1147B;
+$tertiary: #53CBC9;
+$quaternary: #F2A007;
+$quinary: #171E43;
 $additional-font: #fff;
 
 // footer
 $footer-background-color: $primary;
 $footer-title-color: #fff;
 $footer-text-color: #8B99C6;
-$footer-item-disc-color: #74C9C9;
+$footer-item-disc-color: $secondary;
 .footer-logo { filter: brightness(0) invert(1); }
 
 // dashboard
@@ -177,30 +177,35 @@ $modal-status-graph-success: $secondary;
 $stakes-progress-graph-color: $secondary;
 
 // Dark theme
-$dark-primary: #15bba6;
-$dark-secondary: #93d7ff;
-$dark-primary-alternate: #15bba6;
-$dark-tertiary: #5a77ff;
+$dark-primary: $secondary;
+$dark-secondary: #20a29e;
+$dark-primary-alternate: $tertiary;
 
 .dark-theme-applied .tile .tile-body a, .dark-theme-applied .tile span[data-address-hash] {
-    color: $dark-tertiary!important;
+    color: $dark-secondary!important;
 }
 
 .dark-theme-applied .btn-line {
     background-color: transparent!important;
-    border-color: $dark-tertiary!important;
-    color: $dark-tertiary!important;
+    border-color: $dark-secondary!important;
+    color: $dark-secondary!important;
 
     &[disabled] {
         &,
         &:hover {
             background-color: transparent!important;
-            border-color: $dark-tertiary!important;
-            color: $dark-tertiary!important;
+            border-color: $dark-secondary!important;
+            color: $dark-secondary!important;
         }
     }
 }
 
 .dark-theme-applied .btn-line:hover {
     color: $additional-font!important;
+}
+
+.dark-theme-applied .bs-label {
+    &.method {
+        background: $dark-secondary!important;
+    }
 }
