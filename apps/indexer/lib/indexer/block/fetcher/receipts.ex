@@ -14,7 +14,6 @@ defmodule Indexer.Block.Fetcher.Receipts do
         transaction_params
       ) do
     Logger.debug("fetching transaction receipts", count: Enum.count(transaction_params))
-    Logger.info("fetching transactions", count: Enum.count(receipts_batch_size))
     stream_opts = [max_concurrency: state.receipts_concurrency, timeout: :infinity]
 
     transaction_params
