@@ -37,8 +37,6 @@ defmodule Explorer.Market.History.Cataloger do
 
   @impl GenServer
   def handle_info({:fetch_history, day_count}, state) do
-    Logger.warn(fn -> "Fetching market history." end)
-
     fetch_history(day_count)
 
     {:noreply, state}
