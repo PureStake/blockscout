@@ -233,7 +233,7 @@ defmodule Indexer.Fetcher.CoinBalanceOnDemand do
           {:error, :empty_database}
         else
           # block_number - div(@latest_balance_stale_threshold, average_block_time)
-          block_number - 300
+          block_number - 2
         end
     end
   end
