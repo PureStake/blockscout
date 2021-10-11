@@ -1,7 +1,7 @@
 defmodule BlockScoutWeb.API.RPC.LogsController do
   use BlockScoutWeb, :controller
 
-  alias Explorer.{Chain, Etherscan}
+  alias Explorer.{Chain}
 
   def getlogs(conn, params) do
     with {:required_params, {:ok, fetched_params}} <- fetch_required_params(params),
@@ -229,7 +229,7 @@ defmodule BlockScoutWeb.API.RPC.LogsController do
     end
   end
 
-  defp list_logs(filter) do
+  defp list_logs(nil) do
     {:error, :not_found}
     # case Etherscan.list_logs(filter) do
     #   [] -> {:error, :not_found}
