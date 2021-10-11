@@ -230,9 +230,10 @@ defmodule BlockScoutWeb.API.RPC.LogsController do
   end
 
   defp list_logs(filter) do
-    case Etherscan.list_logs(filter) do
-      [] -> {:error, :not_found}
-      logs -> {:ok, logs}
-    end
+    {:error, :not_found}
+    # case Etherscan.list_logs(filter) do
+    #   [] -> {:error, :not_found}
+    #   logs -> {:ok, logs}
+    # end
   end
 end
