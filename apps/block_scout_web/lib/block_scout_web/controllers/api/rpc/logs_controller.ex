@@ -18,6 +18,9 @@ defmodule BlockScoutWeb.API.RPC.LogsController do
 
       {:error, :not_found} ->
         render(conn, :error, error: "No logs found", data: [])
+
+      {:error, :method_disabled} ->
+        render(conn, :error, error: "API method not available", data: [])
     end
   end
 
@@ -230,7 +233,7 @@ defmodule BlockScoutWeb.API.RPC.LogsController do
   end
 
   defp list_logs(_filter) do
-    {:error, :not_found}
+    {:error, :method_disabled}
     # case Etherscan.list_logs(filter) do
     #   [] -> {:error, :not_found}
     #   logs -> {:ok, logs}
