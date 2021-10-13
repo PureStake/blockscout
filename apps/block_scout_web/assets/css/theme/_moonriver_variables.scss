@@ -1,19 +1,20 @@
 // general
-$primary: #0D1126;
-$secondary: #F2A007;
-$tertiary: #53CBC9;
-$quaternary: #E1147B;
-$quinary: #171E43;
+$primary: #0d1126;
+$secondary: #f2a007;
+$tertiary: #53cbc9;
+$quaternary: #e1147b;
+$quinary: #171e43;
 $additional-font: #fff;
-$additional-font-2: #3A8E8C;
-
+$additional-font-2: #3a8e8c;
 
 // footer
 $footer-background-color: $primary;
 $footer-title-color: #fff;
-$footer-text-color: #8B99C6;
+$footer-text-color: #8b99c6;
 $footer-item-disc-color: $secondary;
-.footer-logo { filter: brightness(0) invert(1); }
+.footer-logo {
+  filter: brightness(0) invert(1);
+}
 
 // dashboard
 $dashboard-line-color-price: $tertiary; // price left border
@@ -35,12 +36,22 @@ $dashboard-banner-gradient-end: lighten($primary, 5); // gradient end
 
 $dashboard-banner-network-plain-container-background-color: $quinary; // stats bg
 
-
 // navigation
-.navbar { box-shadow: 0px 0px 30px 0px rgba(21, 53, 80, 0.12); } // header shadow
-$navbar-dark-color: rgba(242, 160, 7, 1) !default;
-$navbar-light-color: rgba(83, 203, 201, 1) !default;
-
+.navbar {
+  box-shadow: 0px 0px 30px 0px rgba(21, 53, 80, 0.12);
+} // header shadow
+$navbar-dark-color: rgba(242, 160, 7, 1);
+$navbar-light-color: rgba(83, 203, 201, 1);
+$navbar-dark-toggler-icon-bg: str-replace(
+  url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$navbar-dark-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"),
+  '#',
+  '%23'
+);
+$navbar-light-toggler-icon-bg: str-replace(
+  url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$navbar-light-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"),
+  '#',
+  '%23'
+);
 
 // form
 $form-control-border-color-active: $secondary;
@@ -57,15 +68,17 @@ $btn-contract-color: $secondary;
 $tile-body-a-color: $additional-font-2;
 $tile-type-block-color: $secondary;
 $tile-type-progress-bar-color: $additional-font-2;
-a.tile-title { color: $secondary !important; }
-.card-body {  
-	a:not(.dropdown-item):not(.button):not([data-test=address_hash_link]):not(.alert-link):not([data-test=token_link]):not(#dropdown-tokens):not(.btn-line):not(.page-link) {
-		color: $additional-font-2;
+a.tile-title {
+  color: $secondary !important;
+}
+.card-body {
+  a:not(.dropdown-item):not(.button):not([data-test='address_hash_link']):not(.alert-link):not([data-test='token_link']):not(#dropdown-tokens):not(.btn-line):not(.page-link) {
+    color: $additional-font-2;
 
-		&:hover {
-			color: $additional-font-2;
-		}
-	}
+    &:hover {
+      color: $additional-font-2;
+    }
+  }
 }
 
 // card
@@ -73,99 +86,101 @@ $card-background-1: $secondary;
 $card-tab-active: $secondary;
 
 .layout-container {
-	.dashboard-banner-container {
-	  background-image: linear-gradient(
-	    to bottom,
-	    $dashboard-banner-gradient-start,
-	    $dashboard-banner-gradient-end
-	  );
-	}
+  .dashboard-banner-container {
+    background-image: linear-gradient(
+      to bottom,
+      $dashboard-banner-gradient-start,
+      $dashboard-banner-gradient-end
+    );
+  }
 }
 
 .navbar.navbar-primary {
-    background-color: $quinary;
-    color: #fff;
+  background-color: $quinary;
+  color: #fff;
 }
 
 .nav-item {
-    color: #fff;
+  color: #fff;
 }
 
 .navbar.navbar-primary .form-control {
-    background-color: $quinary;
-    border-color: $quinary;
-    color: $footer-text-color;
+  background-color: $quinary;
+  border-color: $quinary;
+  color: $footer-text-color;
 }
 
 .navbar.navbar-primary .navbar-nav .nav-link {
-    color: #fff;
+  color: #fff;
 }
 
-.navbar.navbar-primary .navbar-nav .nav-link.active, .navbar.navbar-primary .navbar-nav .nav-link:hover, .navbar.navbar-primary .navbar-nav .nav-link.active-icon {
-    color: #fff;
+.navbar.navbar-primary .navbar-nav .nav-link.active,
+.navbar.navbar-primary .navbar-nav .nav-link:hover,
+.navbar.navbar-primary .navbar-nav .nav-link.active-icon {
+  color: #fff;
 }
 
 .dark-mode-changer {
-    svg path {
-        fill: #fff;
-    }
+  svg path {
+    fill: #fff;
+  }
 }
 
 .navbar.navbar-primary .navbar-nav .nav-link .nav-link-icon.blocks-menu-item path {
-    fill: $tertiary;
+  fill: $tertiary;
 }
 
 .navbar.navbar-primary .navbar-nav .nav-link .nav-link-icon.transactions-menu-item path {
-    fill: $secondary;
+  fill: $secondary;
 }
 
 .navbar.navbar-primary .navbar-nav .nav-link .nav-link-icon.accounts-menu-item path {
-    fill: $quaternary;
+  fill: $quaternary;
 }
 
 .navbar.navbar-primary .navbar-nav .nav-link .nav-link-icon.tokens-menu-item path {
-    fill: #8E44EE;
+  fill: #8e44ee;
 }
 
 .navbar.navbar-primary .navbar-nav .nav-link .nav-link-icon.apis-menu-item path {
-    fill: $tertiary;
+  fill: $tertiary;
 }
 
 .navbar.navbar-primary .navbar-nav .nav-link .nav-link-icon.apps-menu-item path {
-    fill: $quinary;
+  fill: $quinary;
 }
 
 .nav-item .dropdown-menu .dropdown-item {
-    background-color: $quinary;
-    color: $footer-text-color;
+  background-color: $quinary;
+  color: $footer-text-color;
 }
 
 .nav-item .dropdown-menu .dropdown-item:hover {
-    color: #fff;
+  color: #fff;
 }
 
 .nav-item .dropdown-menu .dropdown-item.header {
-    background-color: $quinary !important;
+  background-color: $quinary !important;
 }
 
 .dropdown-item.division {
-    border-top: 1px solid $primary;
+  border-top: 1px solid $primary;
 }
 
 .footer {
-    background-color: #131B34;
-    // background-image: url(/images/custom-themes/moonbeam/footer_logo.svg) !important;
-    background-position: bottom 0px right 30px !important;
-    background-repeat: no-repeat !important;
+  background-color: #131b34;
+  // background-image: url(/images/custom-themes/moonbeam/footer_logo.svg) !important;
+  background-position: bottom 0px right 30px !important;
+  background-repeat: no-repeat !important;
 }
 
 .footer-social-icon {
-    color: $tertiary;
+  color: $tertiary;
 }
 
 // Badges
 $badge-neutral-color: #20446e;
-$badge-neutral-background-color: rgba(#20446e, .1);
+$badge-neutral-background-color: rgba(#20446e, 0.1);
 $api-text-monospace-color: #20446e;
 
 // Staking
@@ -176,42 +191,42 @@ $stakes-address-color: $secondary;
 $stakes-control-color: $secondary;
 $stakes-link-color: $secondary;
 $progress-from-to-progress-background: $secondary;
-$stakes-stats-item-border-color: rgba(#fff, .5);
+$stakes-stats-item-border-color: rgba(#fff, 0.5);
 $check-color: $secondary;
 $modal-status-graph-success: $secondary;
 $stakes-progress-graph-color: $secondary;
 
 // Dark theme
 $dark-primary: $secondary;
-$dark-secondary: #53CBC9;
-$dark-primary-alternate: #E1147B;
+$dark-secondary: #53cbc9;
+$dark-primary-alternate: #e1147b;
 
-
-.dark-theme-applied .tile .tile-body a, .dark-theme-applied .tile span[data-address-hash] {
-    color: $dark-secondary!important;
+.dark-theme-applied .tile .tile-body a,
+.dark-theme-applied .tile span[data-address-hash] {
+  color: $dark-secondary !important;
 }
 
 .dark-theme-applied .btn-line {
-    background-color: transparent!important;
-    border-color: $dark-secondary!important;
-    color: $dark-secondary!important;
+  background-color: transparent !important;
+  border-color: $dark-secondary !important;
+  color: $dark-secondary !important;
 
-    &[disabled] {
-        &,
-        &:hover {
-            background-color: transparent!important;
-            border-color: $dark-secondary!important;
-            color: $dark-secondary!important;
-        }
+  &[disabled] {
+    &,
+    &:hover {
+      background-color: transparent !important;
+      border-color: $dark-secondary !important;
+      color: $dark-secondary !important;
     }
+  }
 }
 
 .dark-theme-applied .btn-line:hover {
-    color: $additional-font!important;
+  color: $additional-font !important;
 }
 
 .dark-theme-applied .bs-label {
-    &.method {
-        background: $dark-secondary!important;
-    }
+  &.method {
+    background: $dark-secondary !important;
+  }
 }
