@@ -11,6 +11,8 @@ defmodule Indexer.Transform.TokenTransfers do
   alias Explorer.Token.MetadataRetriever
 
   @burn_address "0x0000000000000000000000000000000000000000"
+  @deposit_constant "0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c"
+  @withdrawal_constant "0x7fcf532c15f0a6db0bd6d0e038bea71d30d808c7d98cb3bf7268a95bf5081b65"
 
   @doc """
   Returns a list of token transfers given a list of logs.
@@ -48,6 +50,60 @@ defmodule Indexer.Transform.TokenTransfers do
       log_index: log.index,
       from_address_hash: truncate_address_hash(log.second_topic),
       to_address_hash: truncate_address_hash(log.third_topic),
+      token_contract_address_hash: log.address_hash,
+      transaction_hash: log.transaction_hash,
+      token_type: "ERC-20"
+    }
+
+    token = %{
+      contract_address_hash: log.address_hash,
+      type: "ERC-20"
+    }
+
+    update_token(log.address_hash, token_transfer)
+
+    {token, token_transfer}
+  end
+
+  # ERC-20 token deposit
+  defp parse_params(%{first_topic: first_topic, second_topic: second_topic, third_topic: nil, fourth_topic: nil} = log)
+       when first_topic == @deposit_constant do
+    [amount] = decode_data(log.data, [{:uint, 256}])
+
+    token_transfer = %{
+      amount: Decimal.new(amount || 0),
+      block_number: log.block_number,
+      block_hash: log.block_hash,
+      log_index: log.index,
+      from_address_hash: @burn_address,
+      to_address_hash: truncate_address_hash(log.second_topic),
+      token_contract_address_hash: log.address_hash,
+      transaction_hash: log.transaction_hash,
+      token_type: "ERC-20"
+    }
+
+    token = %{
+      contract_address_hash: log.address_hash,
+      type: "ERC-20"
+    }
+
+    update_token(log.address_hash, token_transfer)
+
+    {token, token_transfer}
+  end
+
+  # ERC-20 token withdrawal
+  defp parse_params(%{first_topic: first_topic, second_topic: second_topic, third_topic: nil, fourth_topic: nil} = log)
+       when first_topic == @withdrawal_constant do
+    [amount] = decode_data(log.data, [{:uint, 256}])
+
+    token_transfer = %{
+      amount: Decimal.new(amount || 0),
+      block_number: log.block_number,
+      block_hash: log.block_hash,
+      log_index: log.index,
+      from_address_hash: truncate_address_hash(log.second_topic),
+      to_address_hash: @burn_address,
       token_contract_address_hash: log.address_hash,
       transaction_hash: log.transaction_hash,
       token_type: "ERC-20"
