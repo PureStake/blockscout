@@ -21,7 +21,9 @@ defmodule Indexer.Transform.TokenTransfers do
     initial_acc = %{tokens: [], token_transfers: []}
 
     logs
-    |> Enum.filter(&(&1.first_topic == unquote(TokenTransfer.constant())))
+    |> Enum.filter(fn log ->
+      log.first_topic == unquote(TokenTransfer.constant())
+    end)
     |> Enum.reduce(initial_acc, &do_parse/2)
   end
 
@@ -39,8 +41,8 @@ defmodule Indexer.Transform.TokenTransfers do
   end
 
   # ERC-20 token transfer
-  defp parse_params(%{second_topic: second_topic, third_topic: third_topic, fourth_topic: nil} = log)
-       when not is_nil(second_topic) and not is_nil(third_topic) do
+  defp parse_params(%{first_topic: first_topic, second_topic: second_topic, third_topic: third_topic, fourth_topic: nil} = log)
+       when not is_nil(second_topic) and not is_nil(third_topic) and first_topic == unquote(TokenTransfer.constant()) do
     [amount] = decode_data(log.data, [{:uint, 256}])
 
     token_transfer = %{
@@ -120,8 +122,8 @@ defmodule Indexer.Transform.TokenTransfers do
   end
 
   # ERC-721 token transfer with topics as addresses
-  defp parse_params(%{second_topic: second_topic, third_topic: third_topic, fourth_topic: fourth_topic} = log)
-       when not is_nil(second_topic) and not is_nil(third_topic) and not is_nil(fourth_topic) do
+  defp parse_params(%{first_topic: first_topic, second_topic: second_topic, third_topic: third_topic, fourth_topic: fourth_topic} = log)
+       when not is_nil(second_topic) and not is_nil(third_topic) and not is_nil(fourth_topic) and first_topic == unquote(TokenTransfer.constant()) do
     [token_id] = decode_data(fourth_topic, [{:uint, 256}])
 
     token_transfer = %{
@@ -147,8 +149,8 @@ defmodule Indexer.Transform.TokenTransfers do
   end
 
   # ERC-721 token transfer with info in data field instead of in log topics
-  defp parse_params(%{second_topic: nil, third_topic: nil, fourth_topic: nil, data: data} = log)
-       when not is_nil(data) do
+  defp parse_params(%{first_topic: first_topic, second_topic: nil, third_topic: nil, fourth_topic: nil, data: data} = log)
+       when not is_nil(data) and first_topic == unquote(TokenTransfer.constant()) do
     [from_address_hash, to_address_hash, token_id] = decode_data(data, [:address, :address, {:uint, 256}])
 
     token_transfer = %{
