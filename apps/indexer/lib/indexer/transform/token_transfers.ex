@@ -22,7 +22,7 @@ defmodule Indexer.Transform.TokenTransfers do
 
     logs
     |> Enum.filter(fn log ->
-      log.first_topic == unquote(TokenTransfer.constant())
+      Enum.member?([unquote(TokenTransfer.constant()), @deposit_constant, @withdrawal_constant], log.first_topic)
     end)
     |> Enum.reduce(initial_acc, &do_parse/2)
   end
