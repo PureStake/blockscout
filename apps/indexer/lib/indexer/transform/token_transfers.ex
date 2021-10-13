@@ -67,7 +67,7 @@ defmodule Indexer.Transform.TokenTransfers do
 
   # ERC-20 token deposit
   defp parse_params(%{first_topic: first_topic, second_topic: second_topic, third_topic: nil, fourth_topic: nil} = log)
-       when first_topic == @deposit_constant do
+       when not is_nil(second_topic) and when first_topic == @deposit_constant do
     [amount] = decode_data(log.data, [{:uint, 256}])
 
     token_transfer = %{
@@ -94,7 +94,7 @@ defmodule Indexer.Transform.TokenTransfers do
 
   # ERC-20 token withdrawal
   defp parse_params(%{first_topic: first_topic, second_topic: second_topic, third_topic: nil, fourth_topic: nil} = log)
-       when first_topic == @withdrawal_constant do
+       when not is_nil(second_topic) and when first_topic == @withdrawal_constant do
     [amount] = decode_data(log.data, [{:uint, 256}])
 
     token_transfer = %{
