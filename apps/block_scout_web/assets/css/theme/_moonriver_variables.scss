@@ -38,6 +38,9 @@ $dashboard-banner-network-plain-container-background-color: $quinary; // stats b
 
 // navigation
 .navbar { box-shadow: 0px 0px 30px 0px rgba(21, 53, 80, 0.12); } // header shadow
+$navbar-dark-color: rgba(242, 160, 7, 1) !default;
+$navbar-light-color: rgba(242, 160, 7, 1) !default;
+
 
 // form
 $form-control-border-color-active: $secondary;
