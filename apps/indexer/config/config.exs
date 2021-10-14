@@ -35,14 +35,7 @@ config :indexer,
     String.to_integer(System.get_env("TOKEN_METADATA_UPDATE_INTERVAL") || "#{2 * 24 * 60 * 60}"),
   # bytes
   memory_limit:
-    if System.get_env("INDEXER_MEMORY_LIMIT") do
-      case Integer.parse(System.get_env("INDEXER_MEMORY_LIMIT")) do
-        {integer, ""} -> integer <<< 30
-        _ -> 1 <<< 30
-      end
-    else
-      1 <<< 30
-    end,
+    String.to_integer(System.get_env("INDEXER_MEMORY_LIMIT_GB") || "1") <<< 30,
   first_block: System.get_env("FIRST_BLOCK") || "",
   last_block: System.get_env("LAST_BLOCK") || ""
 
