@@ -54,6 +54,8 @@ defmodule Indexer.Temporary.UncatalogedTokenTransfers do
   def handle_info(:scan, state) do
     {:ok, block_numbers} = Chain.uncataloged_token_transfer_block_numbers()
 
+    Logger.warn(fn -> ["AFTER: Result of querying of uncataloged token transfers: ", inspect(block_numbers)] end)
+
     case block_numbers do
       [] ->
         Supervisor.stop(state.sup_pid, :normal)
