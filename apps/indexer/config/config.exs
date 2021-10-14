@@ -42,7 +42,7 @@ config :indexer,
       end
     else
       1 <<< 30
-    end
+    end,
   first_block: System.get_env("FIRST_BLOCK") || "",
   last_block: System.get_env("LAST_BLOCK") || ""
 
