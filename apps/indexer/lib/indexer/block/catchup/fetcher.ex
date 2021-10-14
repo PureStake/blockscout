@@ -110,8 +110,8 @@ defmodule Indexer.Block.Catchup.Fetcher do
 
         shrunk =
           case missing_block_count do
-            0 ->
-              false
+            # 0 ->
+            #   false
 
             _ ->
               sequence_opts = put_memory_monitor([ranges: missing_ranges, step: -1 * blocks_batch_size], state)
