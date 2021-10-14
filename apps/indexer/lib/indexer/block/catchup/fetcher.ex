@@ -328,15 +328,18 @@ defmodule Indexer.Block.Catchup.Fetcher do
         if is_integer(block_number) do
           case Sequence.push_front(@sequence_name, block_number..block_number) do
             :ok ->
-              Logger.warn(fn -> ["FETCHER: Correcty pushed blocks: ", inspect(block_numbers)] end)
+              Logger.warn(fn -> ["FETCHER: Correcty pushed block: ", inspect(block_number)] end)
               {:cont, :ok}
-            {:error, _} = error -> {:halt, error}
+            {:error, _} = error ->
+              Logger.warn(fn -> ["FETCHER: Could not push block: ", inspect(block_number)] end)
+              {:halt, error}
           end
         else
           Logger.warn(fn -> ["Received a non-integer block number: ", inspect(block_number)] end)
         end
       end)
     else
+      Logger.warn(fn -> ["FETCHER: Queue unavailable: ", inspect(block_numbers)] end)
       {:error, :queue_unavailable}
     end
   end
