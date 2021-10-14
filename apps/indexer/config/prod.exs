@@ -2,9 +2,6 @@ use Mix.Config
 
 config :indexer, Indexer.Tracer, env: "production", disabled?: true
 
-config :indexer,
-  memory_limit: 4 <<< 30
-
 config :logger, :indexer,
   level: :info,
   path: Path.absname("logs/prod/indexer.log"),
