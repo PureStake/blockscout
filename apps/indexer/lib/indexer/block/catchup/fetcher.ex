@@ -320,11 +320,16 @@ defmodule Indexer.Block.Catchup.Fetcher do
   """
   @spec push_front([non_neg_integer()]) :: :ok | {:error, :queue_unavailable | :maximum_size | String.t()}
   def push_front(block_numbers) do
+
+    Logger.warn(fn -> ["FETCHER: Pushing blocks to front of the queue: ", inspect(block_numbers)] end)
+
     if Process.whereis(@sequence_name) do
       Enum.reduce_while(block_numbers, :ok, fn block_number, :ok ->
         if is_integer(block_number) do
           case Sequence.push_front(@sequence_name, block_number..block_number) do
-            :ok -> {:cont, :ok}
+            :ok ->
+              Logger.warn(fn -> ["FETCHER: Correcty pushed blocks: ", inspect(block_numbers)] end)
+              {:cont, :ok}
             {:error, _} = error -> {:halt, error}
           end
         else
