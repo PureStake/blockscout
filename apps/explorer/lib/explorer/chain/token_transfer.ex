@@ -67,6 +67,8 @@ defmodule Explorer.Chain.TokenTransfer do
   @typep paging_options :: {:paging_options, PagingOptions.t()}
 
   @constant "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+  @deposit_constant "0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c"
+  @withdrawal_constant "0x7fcf532c15f0a6db0bd6d0e038bea71d30d808c7d98cb3bf7268a95bf5081b65"
 
   @transfer_function_signature "0xa9059cbb"
 
@@ -133,6 +135,18 @@ defmodule Explorer.Chain.TokenTransfer do
   `first_topic` field.
   """
   def constant, do: @constant
+
+  @doc """
+  Value that represents a token deposit in a `t:Explorer.Chain.Log.t/0`'s
+  `first_topic` field.
+  """
+  def deposit_constant, do: @deposit_constant
+
+  @doc """
+  Value that represents a token withdrawal in a `t:Explorer.Chain.Log.t/0`'s
+  `first_topic` field.
+  """
+  def withdrawal_constant, do: @withdrawal_constant
 
   @doc """
   ERC 20's transfer(address,uint256) function signature

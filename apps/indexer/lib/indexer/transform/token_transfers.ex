@@ -11,8 +11,6 @@ defmodule Indexer.Transform.TokenTransfers do
   alias Explorer.Token.MetadataRetriever
 
   @burn_address "0x0000000000000000000000000000000000000000"
-  @deposit_constant "0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c"
-  @withdrawal_constant "0x7fcf532c15f0a6db0bd6d0e038bea71d30d808c7d98cb3bf7268a95bf5081b65"
 
   @doc """
   Returns a list of token transfers given a list of logs.
@@ -22,7 +20,7 @@ defmodule Indexer.Transform.TokenTransfers do
 
     logs
     |> Enum.filter(fn log ->
-      Enum.member?([unquote(TokenTransfer.constant()), @deposit_constant, @withdrawal_constant], log.first_topic)
+      Enum.member?([unquote(TokenTransfer.constant()), unquote(TokenTransfer.deposit_constant()), unquote(TokenTransfer.withdrawal_constant())], log.first_topic)
     end)
     |> Enum.reduce(initial_acc, &do_parse/2)
   end
@@ -69,7 +67,7 @@ defmodule Indexer.Transform.TokenTransfers do
 
   # ERC-20 token deposit
   defp parse_params(%{first_topic: first_topic, second_topic: second_topic, third_topic: nil, fourth_topic: nil} = log)
-       when not is_nil(second_topic) and first_topic == @deposit_constant do
+       when not is_nil(second_topic) and first_topic == unquote(TokenTransfer.deposit_constant()) do
     [amount] = decode_data(log.data, [{:uint, 256}])
 
     token_transfer = %{
@@ -96,7 +94,7 @@ defmodule Indexer.Transform.TokenTransfers do
 
   # ERC-20 token withdrawal
   defp parse_params(%{first_topic: first_topic, second_topic: second_topic, third_topic: nil, fourth_topic: nil} = log)
-       when not is_nil(second_topic) and first_topic == @withdrawal_constant do
+       when not is_nil(second_topic) and first_topic == unquote(TokenTransfer.withdrawal_constant()) do
     [amount] = decode_data(log.data, [{:uint, 256}])
 
     token_transfer = %{
