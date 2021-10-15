@@ -36,18 +36,6 @@ $dashboard-banner-network-plain-container-background-color: $quinary; // stats b
 
 // navigation
 .navbar { box-shadow: 0px 0px 30px 0px rgba(21, 53, 80, 0.12); } // header shadow
-$navbar-dark-color: rgba(225, 20, 123, 1);
-$navbar-light-color: rgba(83, 203, 201, 1);
-$navbar-dark-toggler-icon-bg: str-replace(
-  url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$navbar-dark-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"),
-  "#",
-  "%23"
-);
-$navbar-light-toggler-icon-bg: str-replace(
-  url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#{$navbar-light-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E"),
-  "#",
-  "%23"
-);
 
 // form
 $form-control-border-color-active: $secondary;
