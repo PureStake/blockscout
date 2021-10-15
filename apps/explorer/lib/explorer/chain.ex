@@ -3970,7 +3970,7 @@ defmodule Explorer.Chain do
         join: t in assoc(l, :transaction),
         left_join: tf in TokenTransfer,
         on: tf.transaction_hash == l.transaction_hash and tf.log_index == l.index,
-        where: l.first_topic == unquote(TokenTransfer.constant()),
+        where: l.first_topic in [unquote(TokenTransfer.constant()), unquote(TokenTransfer.deposit_constant()), unquote(TokenTransfer.withdrawal_constant())],
         where: is_nil(tf.transaction_hash) and is_nil(tf.log_index),
         where: not is_nil(t.block_hash),
         select: t.block_number,
