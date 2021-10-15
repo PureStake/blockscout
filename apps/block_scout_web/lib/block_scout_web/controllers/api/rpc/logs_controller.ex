@@ -232,7 +232,7 @@ defmodule BlockScoutWeb.API.RPC.LogsController do
     end
   end
 
-  defp list_logs(filter) do
+  defp list_logs(_filter) do
     {:error, :method_disabled}
   end
 end
