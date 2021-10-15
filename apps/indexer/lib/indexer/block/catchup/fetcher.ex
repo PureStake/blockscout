@@ -103,7 +103,7 @@ defmodule Indexer.Block.Catchup.Fetcher do
           |> Stream.map(&Enum.count/1)
           |> Enum.sum()
 
-        Logger.info(fn -> "Missed blocks in ranges." end,
+        Logger.debug(fn -> "Missed blocks in ranges." end,
           missing_block_range_count: range_count,
           missing_block_count: missing_block_count
         )
@@ -118,8 +118,6 @@ defmodule Indexer.Block.Catchup.Fetcher do
               gen_server_opts = [name: @sequence_name]
               {:ok, sequence} = Sequence.start_link(sequence_opts, gen_server_opts)
               Sequence.cap(sequence)
-
-              Logger.warn("Sequencer is on!")
 
               stream_fetch_and_import(state, sequence)
 
