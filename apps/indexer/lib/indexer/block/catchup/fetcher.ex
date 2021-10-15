@@ -334,7 +334,6 @@ defmodule Indexer.Block.Catchup.Fetcher do
         end
       end)
     else
-      Logger.warn(fn -> ["FETCHER: Queue unavailable: ", inspect(block_numbers)] end)
       {:error, :queue_unavailable}
     end
   end
