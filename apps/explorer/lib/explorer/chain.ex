@@ -3965,8 +3965,6 @@ defmodule Explorer.Chain do
   associated `t:TokenTransfer.t/0` record.
   """
   def uncataloged_token_transfer_block_numbers do
-    Logger.warn("Querying for uncataloged token transfers...")
-
     query =
       from(l in Log,
         join: t in assoc(l, :transaction),
