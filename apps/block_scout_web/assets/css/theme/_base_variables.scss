@@ -705,7 +705,7 @@ $navbar-dark-toggler-icon-bg: str-replace(
 ) !default;
 $navbar-dark-toggler-border-color: rgba($white, 0.1) !default;
 
-$navbar-light-color: $gray-200 !default;
+$navbar-light-color: rgba($white, 0.75) !default;
 $navbar-light-hover-color: rgba($black, 0.7) !default;
 $navbar-light-active-color: rgba($black, 0.9) !default;
 $navbar-light-disabled-color: rgba($black, 0.3) !default;
