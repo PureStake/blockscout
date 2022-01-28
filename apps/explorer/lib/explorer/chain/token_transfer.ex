@@ -71,6 +71,8 @@ defmodule Explorer.Chain.TokenTransfer do
   @typep paging_options :: {:paging_options, PagingOptions.t()}
 
   @constant "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+  @deposit_constant "0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c"
+  @withdrawal_constant "0x7fcf532c15f0a6db0bd6d0e038bea71d30d808c7d98cb3bf7268a95bf5081b65"
   @erc1155_single_transfer_signature "0xc3d58168c5ae7397731d063d5bbf3d657854427343f4c083240f7aacaa2d0f62"
   @erc1155_batch_transfer_signature "0x4a39dc06d4c0dbc64b70af90fd698a233a518aa5d07e595d983b8c0526c8f7fb"
 
@@ -141,6 +143,19 @@ defmodule Explorer.Chain.TokenTransfer do
   `first_topic` field.
   """
   def constant, do: @constant
+
+  @doc """
+  Value that represents a token deposit in a `t:Explorer.Chain.Log.t/0`'s
+  `first_topic` field.
+  """
+  def deposit_constant, do: @deposit_constant
+
+  @doc """
+  Value that represents a token withdrawal in a `t:Explorer.Chain.Log.t/0`'s
+  `first_topic` field.
+  """
+  def withdrawal_constant, do: @withdrawal_constant
+
 
   def erc1155_single_transfer_signature, do: @erc1155_single_transfer_signature
 
