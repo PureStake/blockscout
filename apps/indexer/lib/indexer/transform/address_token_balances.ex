@@ -54,8 +54,7 @@ defmodule Indexer.Transform.AddressTokenBalances do
       },
       acc
       when is_integer(block_number) and is_binary(from_address_hash) and
-             is_binary(to_address_hash) and is_binary(token_contract_address_hash) and
-             token_type == "ERC-721" ->
+             is_binary(to_address_hash) and is_binary(token_contract_address_hash) ->
         acc
         |> add_token_balance_address(from_address_hash, token_contract_address_hash, token_id, token_type, block_number)
         |> add_token_balance_address(to_address_hash, token_contract_address_hash, token_id, token_type, block_number)
