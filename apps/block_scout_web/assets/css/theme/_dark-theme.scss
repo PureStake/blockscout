@@ -98,7 +98,7 @@ $dark-stakes-banned-background: #3e314c;
 
 	.layout-container .dashboard-banner-container {
 		background-image: none;
-		background-color: $dark-bg;
+		background-color: $dark-bg !important;
 	}
 	.dashboard-banner-network-plain-container,
 	.dashboard-banner-network-plain-container::after {
@@ -108,14 +108,33 @@ $dark-stakes-banned-background: #3e314c;
 	.dashboard-banner-chart-legend .dashboard-banner-chart-legend-label {
 		color: $labels-dark;
 	}
-	.dashboard-banner-chart-legend .dashboard-banner-chart-legend-item:nth-child(1)::before {
-		background-color: $dark-primary;
-	}
 	.dashboard-banner-network-stats-item::before {
 		background-color: $dark-secondary;
 	}
-	.dashboard-banner-chart-legend .dashboard-banner-chart-legend-item:nth-child(2)::before {
-		background-color: $dark-secondary;
+	.dashboard-banner-chart-legend .dashboard-banner-chart-legend-item {
+		&.price-per-day {
+			&::before {
+			  background-color: $dark-primary;
+			}
+		  }
+	  
+		  &.gas-price-oracle {
+			&::before {
+			  background-color: $dark-primary;
+			}
+		  }
+	  
+		  &.market-cap-per-day {
+			&::before {
+			  background-color:$dark-secondary;
+			}
+		  }
+	  
+		  &.tx-per-day {
+			&::before {
+			  background-color: $dashboard-line-color-transactions;
+			}
+		  }
 	}
 
 	// main container, layout, cards
@@ -161,7 +180,7 @@ $dark-stakes-banned-background: #3e314c;
 		color: $dark-primary;
 	}
 
-	.tile {
+	.tile, .tile-code {
 		border-top-color: $dark-light;
 		border-bottom-color: $dark-light;
 		border-right-color: $dark-light;
@@ -290,6 +309,9 @@ $dark-stakes-banned-background: #3e314c;
 	}
 	.dropdown-item.active {
 		background-color: $dark-primary;
+	}
+	.dropdown-item.active.header,	.dropdown-item.header:hover,	.dropdown-item.header:focus {
+		background-color: $dark-light !important;
 	}
 	.btn-dropdown-line {
 		background-color: $dark-light;
@@ -421,62 +443,6 @@ $dark-stakes-banned-background: #3e314c;
 	.tooltip-pale-color.bs-tooltip-left .arrow::before,
 	.tooltip-pale-color.bs-tooltip-auto[x-placement^="left"] .arrow::before {
 		border-left-color: rgba(#fff, 0.5) !important;
-	}
-
-	//network select
-	.network-selector-overlay {
-		background-color: rgba($dark-bg, .9);
-	}
-	.network-selector {
-		background-color: $dark-light-bg;
-	}
-	.network-selector-title {
-		color: #fff;
-	}
-	.network-selector-text {
-		color: $labels-dark;
-	}
-	.network-selector-close path {
-		fill: #fff;
-	}
-	.network-selector-search-container {
-		background-color: $dark-light;
-	}
-	.network-selector-search-container path {
-		fill: $labels-dark;
-	}
-	.network-selector-search-input {
-		color: #fff !important;
-		&::placeholder {
-			color: $labels-dark;
-		}
-	}
-	.network-selector-tab {
-		color: $labels-dark;
-		&:hover, &.active {
-			color: #fff;
-		}
-		&.active {
-			&:after {
-				background-color: $dark-primary;
-			}
-		}
-	}
-	.network-selector-item,
-	.network-selector-tabs-container {
-		border-bottom-color: darken($labels-dark, 30);
-	}
-	.network-selector-item-title {
-		color: #fff;
-	}
-	.network-selector-item-type {
-		color: $labels-dark;
-	}
-	.radio .radio-icon {
-		border-color: $labels-dark
-	}
-	.network-selector-item-url:hover .network-selector-item-type {
-		color: #fff;
 	}
 
 	//coin dropdown
@@ -768,29 +734,6 @@ $dark-stakes-banned-background: #3e314c;
 		&:hover {
 			background-color: $dark-primary;
 			border-color: $dark-primary;
-			color: #fff;
-		}
-	}
-
-	.awesomplete {
-		& > ul {
-			background: $dark-light-bg;
-			&:before {
-				background: $dark-light-bg;
-			}
-			li {
-				&:hover {
-					background-color: $dark-primary;
-					color: #fff;
-					mark {
-						background: darken($dark-primary, 10);
-						color: #fff;
-					}
-				}
-			}
-		}
-		mark {
-			background: $dark-primary;
 			color: #fff;
 		}
 	}
@@ -1097,15 +1040,6 @@ $dark-stakes-banned-background: #3e314c;
 		background-image: none;
 	}
 
-	.input-group {
-		.awesomplete mark {
-			background: $yellow !important;
-		}
-		
-		.awesomplete li:hover mark {
-			background: $yellow !important;
-		}
-	}
 	.contract-plus-btn {
 		color: $dark-primary;
 	}
@@ -1116,6 +1050,27 @@ $dark-stakes-banned-background: #3e314c;
 		path {
 			fill: #fff;
 		  }
+	}
+	.main-search-autocomplete {
+		background-color: $dark-bg !important;
+		color: #fff !important;
+	}
+	.autocomplete-category {
+		color: #fff !important;
+	}
+	ul[id^='autoComplete_list_'] {
+		background-color: $dark-light-bg !important;
+	}
+	li[id^='autoComplete_result_'] {
+		background-color: $dark-light-bg !important;
+		color: #fff !important;
+
+		&:hover {
+			background-color: $dark-primary !important;
+		}
+		&[aria-selected="true"] {
+			background-color: $dark-primary !important;
+		}
 	}
 }
 
@@ -1167,7 +1122,15 @@ $dark-stakes-banned-background: #3e314c;
 		color: $dark-primary;
 	}
 }
-
 .dark-theme-applied .confirmations-label:after {
-    background: .7rem solid $dark-light-bg;
+    border-left: .9rem solid $dark-light-bg;
+}
+
+.dark-theme-applied .i-tooltip-2:hover{
+	color: $labels-dark;
+}
+
+.dark-theme-applied .btn-no-border-link-to-tems {
+	border-color: $dark-primary;
+	color: $dark-primary;
 }

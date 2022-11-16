@@ -4,15 +4,26 @@ defmodule BlockScoutWeb.Notifier do
   """
 
   alias Absinthe.Subscription
-  alias BlockScoutWeb.{AddressContractVerificationView, Endpoint}
+
+  alias BlockScoutWeb.{
+    AddressContractVerificationViaFlattenedCodeView,
+    AddressContractVerificationViaJsonView,
+    AddressContractVerificationViaMultiPartFilesView,
+    AddressContractVerificationViaStandardJsonInputView,
+    AddressContractVerificationVyperView,
+    Endpoint
+  }
+
   alias Explorer.{Chain, Market, Repo}
   alias Explorer.Chain.{Address, InternalTransaction, TokenTransfer, Transaction}
   alias Explorer.Chain.Supply.RSK
   alias Explorer.Chain.Transaction.History.TransactionStats
-  alias Explorer.Counters.AverageBlockTime
+  alias Explorer.Counters.{AverageBlockTime, Helper}
   alias Explorer.ExchangeRates.Token
-  alias Explorer.SmartContract.{Solidity.CodeCompiler, Solidity.CompilerVersion}
+  alias Explorer.SmartContract.{CompilerVersion, Solidity.CodeCompiler}
   alias Phoenix.View
+
+  @check_broadcast_sequence_period 500
 
   def handle_event({:chain_event, :addresses, type, addresses}) when type in [:realtime, :on_demand] do
     Endpoint.broadcast("addresses:new_address", "count", %{count: Chain.address_estimated_count()})
@@ -40,28 +51,25 @@ defmodule BlockScoutWeb.Notifier do
   def handle_event(
         {:chain_event, :contract_verification_result, :on_demand, {address_hash, contract_verification_result, conn}}
       ) do
+    %{view: view, compiler: compiler} = select_contract_type_and_form_view(conn.params)
+
     contract_verification_result =
       case contract_verification_result do
         {:ok, _} = result ->
           result
 
         {:error, changeset} ->
-          compiler_versions =
-            case CompilerVersion.fetch_versions() do
-              {:ok, compiler_versions} ->
-                compiler_versions
-
-              {:error, _} ->
-                []
-            end
+          compiler_versions = fetch_compiler_version(compiler)
 
           result =
-            View.render_to_string(AddressContractVerificationView, "new.html",
+            view
+            |> View.render_to_string("new.html",
               changeset: changeset,
               compiler_versions: compiler_versions,
               evm_versions: CodeCompiler.allowed_evm_versions(),
               address_hash: address_hash,
-              conn: conn
+              conn: conn,
+              retrying: true
             )
 
           {:error, result}
@@ -83,7 +91,13 @@ defmodule BlockScoutWeb.Notifier do
   end
 
   def handle_event({:chain_event, :blocks, :realtime, blocks}) do
-    Enum.each(blocks, &broadcast_block/1)
+    last_broadcasted_block_number = Helper.fetch_from_cache(:number, :last_broadcasted_block)
+
+    blocks
+    |> Enum.sort_by(& &1.number, :asc)
+    |> Enum.each(fn block ->
+      broadcast_latest_block?(block, last_broadcasted_block_number)
+    end)
   end
 
   def handle_event({:chain_event, :exchange_rate}) do
@@ -101,7 +115,7 @@ defmodule BlockScoutWeb.Notifier do
           %{exchange_rate | available_supply: nil, market_cap_usd: RSK.market_cap(exchange_rate)}
 
         _ ->
-          exchange_rate
+          Map.from_struct(exchange_rate)
       end
 
     Endpoint.broadcast("exchange_rate:new_rate", "new_rate", %{
@@ -182,6 +196,42 @@ defmodule BlockScoutWeb.Notifier do
 
   def handle_event(_), do: nil
 
+  def fetch_compiler_version(compiler) do
+    case CompilerVersion.fetch_versions(compiler) do
+      {:ok, compiler_versions} ->
+        compiler_versions
+
+      {:error, _} ->
+        []
+    end
+  end
+
+  def select_contract_type_and_form_view(params) do
+    verification_from_metadata_json? = check_verification_type(params, "json:metadata")
+
+    verification_from_standard_json_input? = check_verification_type(params, "json:standard")
+
+    verification_from_vyper? = check_verification_type(params, "vyper")
+
+    verification_from_multi_part_files? = check_verification_type(params, "multi-part-files")
+
+    compiler = if verification_from_vyper?, do: :vyper, else: :solc
+
+    view =
+      cond do
+        verification_from_standard_json_input? -> AddressContractVerificationViaStandardJsonInputView
+        verification_from_metadata_json? -> AddressContractVerificationViaJsonView
+        verification_from_vyper? -> AddressContractVerificationVyperView
+        verification_from_multi_part_files? -> AddressContractVerificationViaMultiPartFilesView
+        true -> AddressContractVerificationViaFlattenedCodeView
+      end
+
+    %{view: view, compiler: compiler}
+  end
+
+  defp check_verification_type(params, type),
+    do: Map.has_key?(params, "verification_type") && Map.get(params, "verification_type") == type
+
   @doc """
   Broadcast the percentage of blocks indexed so far.
   """
@@ -190,6 +240,35 @@ defmodule BlockScoutWeb.Notifier do
       ratio: Decimal.to_string(ratio),
       finished: finished?
     })
+  end
+
+  defp broadcast_latest_block?(block, last_broadcasted_block_number) do
+    cond do
+      last_broadcasted_block_number == 0 || last_broadcasted_block_number == block.number - 1 ||
+          last_broadcasted_block_number < block.number - 4 ->
+        broadcast_block(block)
+        :ets.insert(:last_broadcasted_block, {:number, block.number})
+
+      last_broadcasted_block_number > block.number - 1 ->
+        broadcast_block(block)
+
+      true ->
+        Task.start_link(fn ->
+          schedule_broadcasting(block)
+        end)
+    end
+  end
+
+  defp schedule_broadcasting(block) do
+    :timer.sleep(@check_broadcast_sequence_period)
+    last_broadcasted_block_number = Helper.fetch_from_cache(:number, :last_broadcasted_block)
+
+    if last_broadcasted_block_number == block.number - 1 do
+      broadcast_block(block)
+      :ets.insert(:last_broadcasted_block, {:number, block.number})
+    else
+      schedule_broadcasting(block)
+    end
   end
 
   defp broadcast_address_coin_balance(%{address_hash: address_hash, block_number: block_number}) do
@@ -246,10 +325,6 @@ defmodule BlockScoutWeb.Notifier do
   end
 
   defp broadcast_internal_transaction(internal_transaction) do
-    Endpoint.broadcast("internal_transactions:new_internal_transaction", "new_internal_transaction", %{
-      internal_transaction: internal_transaction
-    })
-
     Endpoint.broadcast("addresses:#{internal_transaction.from_address_hash}", "internal_transaction", %{
       address: internal_transaction.from_address,
       internal_transaction: internal_transaction
@@ -292,15 +367,11 @@ defmodule BlockScoutWeb.Notifier do
   end
 
   defp broadcast_token_transfer(token_transfer) do
-    broadcast_token_transfer(token_transfer, "token_transfers:new_token_transfer", "token_transfer")
+    broadcast_token_transfer(token_transfer, "token_transfer")
   end
 
-  defp broadcast_token_transfer(token_transfer, token_transfer_channel, event) do
+  defp broadcast_token_transfer(token_transfer, event) do
     Endpoint.broadcast("token_transfers:#{token_transfer.transaction_hash}", event, %{})
-
-    Endpoint.broadcast(token_transfer_channel, event, %{
-      token_transfer: token_transfer
-    })
 
     Endpoint.broadcast("addresses:#{token_transfer.from_address_hash}", event, %{
       address: token_transfer.from_address,

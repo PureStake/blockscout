@@ -15,7 +15,7 @@ defmodule EthereumJsonrpc.MixProject do
         plt_add_apps: [:mix],
         ignore_warnings: "../../.dialyzer-ignore"
       ],
-      elixir: "~> 1.10",
+      elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
       lockfile: "../../mix.lock",
       preferred_cli_env: [
@@ -23,7 +23,7 @@ defmodule EthereumJsonrpc.MixProject do
         dialyzer: :test
       ],
       start_permanent: Mix.env() == :prod,
-      version: "0.1.0"
+      version: "4.1.8"
     ]
   end
 
@@ -59,32 +59,32 @@ defmodule EthereumJsonrpc.MixProject do
       # WebSocket-server for testing `EthereumJSONRPC.WebSocket.WebSocketClient`.
       {:cowboy, "~> 2.0", only: [:dev, :test]},
       # Style Checking
-      {:credo, "~> 1.1", only: :test, runtime: false},
+      {:credo, "~> 1.5", only: :test, runtime: false},
       # Static Type Checking
-      {:dialyxir, "~> 0.5", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false},
       # JSONRPC HTTP Post calls
       {:httpoison, "~> 1.6"},
       # Decode/Encode JSON for JSONRPC
-      {:jason, "~> 1.0"},
+      {:jason, "~> 1.3"},
       # Log errors and application output to separate files
       {:logger_file_backend, "~> 0.0.10"},
       # Mocking `EthereumJSONRPC.Transport` and `EthereumJSONRPC.HTTP` so we avoid hitting real chains for local testing
-      {:mox, "~> 0.4", only: [:test]},
+      {:mox, "~> 1.0", only: [:test]},
       # Tracing
       {:spandex, "~> 3.0"},
       # `:spandex` integration with Datadog
       {:spandex_datadog, "~> 1.0"},
       # Convert unix timestamps in JSONRPC to DateTimes
-      {:timex, "~> 3.6"},
+      {:timex, "~> 3.7.1"},
       # Encode/decode function names and arguments
       {:ex_abi, "~> 0.4"},
       # `:verify_fun` for `Socket.Web.connect`
       {:ssl_verify_fun, "~> 1.1"},
       # `EthereumJSONRPC.WebSocket`
       {:websocket_client, "~> 1.3"},
-      {:decimal, "~> 1.0"},
-      {:decorator, "~> 1.2"},
-      {:hackney, "~> 1.16"},
+      {:decimal, "~> 2.0"},
+      {:decorator, "~> 1.4"},
+      {:hackney, "~> 1.18"},
       {:poolboy, "~> 1.5.2"}
     ]
   end

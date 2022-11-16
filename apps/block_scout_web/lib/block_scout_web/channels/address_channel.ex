@@ -12,7 +12,7 @@ defmodule BlockScoutWeb.AddressChannel do
   }
 
   alias Explorer.{Chain, Market, Repo}
-  alias Explorer.Chain.{Hash, Transaction}
+  alias Explorer.Chain.{Hash, Transaction, Wei}
   alias Explorer.Chain.Hash.Address, as: AddressHash
   alias Explorer.ExchangeRates.Token
   alias Phoenix.View
@@ -24,7 +24,8 @@ defmodule BlockScoutWeb.AddressChannel do
     "internal_transaction",
     "transaction",
     "verification_result",
-    "token_transfer"
+    "token_transfer",
+    "pending_transaction"
   ])
 
   {:ok, burn_address_hash} = Chain.string_to_address_hash("0x0000000000000000000000000000000000000000")
@@ -136,7 +137,39 @@ defmodule BlockScoutWeb.AddressChannel do
       coin_balance_html: rendered_coin_balance
     })
 
+    push_current_coin_balance(socket, block_number, coin_balance)
+
     {:noreply, socket}
+  end
+
+  def handle_out("pending_transaction", data, socket), do: handle_transaction(data, socket, "transaction")
+
+  def push_current_coin_balance(socket, block_number, coin_balance) do
+    {:ok, hash} = Chain.string_to_address_hash(socket.assigns.address_hash)
+
+    rendered_current_coin_balance =
+      View.render_to_string(
+        AddressView,
+        "_current_coin_balance.html",
+        conn: socket,
+        address: Chain.hash_to_address(hash),
+        coin_balance: (coin_balance && coin_balance.value) || %Wei{value: Decimal.new(0)},
+        exchange_rate: Market.get_exchange_rate(Explorer.coin()) || Token.null()
+      )
+
+    rendered_link =
+      View.render_to_string(
+        AddressView,
+        "_block_link.html",
+        conn: socket,
+        block_number: block_number
+      )
+
+    push(socket, "current_coin_balance", %{
+      current_coin_balance_html: rendered_current_coin_balance,
+      current_coin_balance_block_number_html: rendered_link,
+      current_coin_balance_block_number: coin_balance.block_number
+    })
   end
 
   def handle_transaction(%{address: address, transaction: transaction}, socket, event) do
@@ -197,7 +230,7 @@ defmodule BlockScoutWeb.AddressChannel do
       rendered =
         View.render_to_string(
           AddressView,
-          "_balance_card.html",
+          "_balance_dropdown.html",
           conn: socket,
           address: address,
           coin_balance_status: :current,

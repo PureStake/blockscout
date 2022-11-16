@@ -39,6 +39,14 @@ defmodule BlockScoutWeb.ApiDocsViewTest do
   end
 
   describe "blockscout_url/2" do
+    setup do
+      original = Application.get_env(:block_scout_web, BlockScoutWeb.Endpoint)
+
+      on_exit(fn -> Application.put_env(:block_scout_web, BlockScoutWeb.Endpoint, original) end)
+
+      :ok
+    end
+
     test "set_path = true returns url with path" do
       Application.put_env(:block_scout_web, BlockScoutWeb.Endpoint,
         url: [scheme: "https", host: "blockscout.com", api_path: "/eth/mainnet", path: "/eth/mainnet"]

@@ -1,7 +1,7 @@
 const path = require('path')
 const TerserJSPlugin = require('terser-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const { ContextReplacementPlugin } = require('webpack')
 const glob = require('glob')
@@ -32,46 +32,12 @@ const jsOptimizationParams = {
   parallel: true
 }
 
-const awesompleteJs = {
-  entry: {
-    awesomplete: './js/lib/awesomplete.js',
-    'awesomplete-util': './js/lib/awesomplete-util.js',
-  },
-  output: {
-    filename: '[name].min.js',
-    path: path.resolve(__dirname, '../priv/static/js')
-  },
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: [
-          MiniCssExtractPlugin.loader,
-          {
-            loader: "css-loader",
-          }
-        ]
-      }
-    ]
-  },
-  optimization: {
-    minimizer: [
-      new TerserJSPlugin(jsOptimizationParams),
-    ]
-  },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: '../css/awesomplete.css'
-    })
-  ]
-}
-
 const appJs =
   {
     entry: {
-      app: './js/app.js',
-      stakes: './js/pages/stakes.js',
+      'app': './js/app.js',
       'chart-loader': './js/chart-loader.js',
+      'balance-chart-loader': './js/balance-chart-loader.js',
       'chain': './js/pages/chain.js',
       'blocks': './js/pages/blocks.js',
       'address': './js/pages/address.js',
@@ -88,22 +54,30 @@ const appJs =
       'token-counters': './js/pages/token_counters.js',
       'token-transfers': './js/pages/token/token_transfers.js',
       'admin-tasks': './js/pages/admin/tasks.js',
-      'read-token-contract': './js/pages/read_token_contract.js',
+      'token-contract': './js/pages/token_contract.js',
       'smart-contract-helpers': './js/lib/smart_contract/index.js',
-      'write-contract': './js/pages/write_contract.js',
       'token-transfers-toggle': './js/lib/token_transfers_toggle.js',
       'try-api': './js/lib/try_api.js',
       'try-eth-api': './js/lib/try_eth_api.js',
       'async-listing-load': './js/lib/async_listing_load',
       'non-critical': './css/non-critical.scss',
-      'tokens': './js/pages/token/search.js'
+      'main-page': './css/main-page.scss',
+      'tokens': './js/pages/token/search.js',
+      'text-ad': './js/lib/text_ad.js',
+      'banner': './js/lib/banner.js',
+      'autocomplete': './js/lib/autocomplete.js',
+      'search-results': './js/pages/search-results/search.js',
+      'token-overview': './js/pages/token/overview.js',
+      'export-csv': './css/export-csv.scss',
+      'csv-download': './js/lib/csv_download.js',
+      'dropzone': './js/lib/dropzone.js'
     },
     output: {
       filename: '[name].js',
       path: path.resolve(__dirname, '../priv/static/js')
     },
     optimization: {
-      minimizer: [new TerserJSPlugin(jsOptimizationParams), new OptimizeCSSAssetsPlugin({})],
+      minimizer: [new TerserJSPlugin(jsOptimizationParams), new CssMinimizerPlugin()],
     },
     module: {
       rules: [
@@ -117,8 +91,12 @@ const appJs =
         {
           test: /\.scss$/,
           use: [
-            MiniCssExtractPlugin.loader,
             {
+              loader: MiniCssExtractPlugin.loader,
+              options: {
+                esModule: false,
+              },
+            }, {
               loader: 'css-loader'
             }, {
               loader: 'postcss-loader'
@@ -144,6 +122,11 @@ const appJs =
               outputPath: '../fonts/',
               publicPath: '../fonts/'
             }
+          }
+        }, {
+          test: /\.(png)$/,
+          use: {
+            loader: 'file-loader'
           }
         }
       ]
@@ -172,7 +155,8 @@ const appJs =
       ),
       new ContextReplacementPlugin(/moment[\/\\]locale$/, /en/),
       new webpack.DefinePlugin({
-        'process.env.SOCKET_ROOT': JSON.stringify(process.env.SOCKET_ROOT)
+        'process.env.SOCKET_ROOT': JSON.stringify(process.env.SOCKET_ROOT),
+        'process.env.NETWORK_PATH': JSON.stringify(process.env.NETWORK_PATH)
       }),
       new webpack.ProvidePlugin({
         process: 'process/browser',
@@ -183,4 +167,4 @@ const appJs =
 
 const viewScripts = glob.sync('./js/view_specific/**/*.js').map(transpileViewScript)
 
-module.exports = viewScripts.concat(appJs, awesompleteJs)
+module.exports = viewScripts.concat(appJs)

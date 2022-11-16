@@ -82,6 +82,49 @@ defmodule BlockScoutWeb.API.RPC.AddressControllerTest do
              ] = response["result"]
     end
 
+    test "sort by hash", %{params: params, conn: conn} do
+      inserted_at = Timex.shift(Timex.now(), minutes: -10)
+
+      first_address =
+        insert(:address,
+          hash: "0x0000000000000000000000000000000000000001",
+          fetched_coin_balance: 10,
+          inserted_at: inserted_at
+        )
+
+      second_address =
+        insert(:address,
+          hash: "0x0000000000000000000000000000000000000002",
+          fetched_coin_balance: 100,
+          inserted_at: inserted_at
+        )
+
+      first_address_hash = to_string(first_address.hash)
+      second_address_hash = to_string(second_address.hash)
+
+      first_address_inserted_at = to_string(first_address.inserted_at)
+      second_address_inserted_at = to_string(second_address.inserted_at)
+
+      response =
+        conn
+        |> get("/api", params)
+        |> json_response(200)
+
+      schema = listaccounts_schema()
+      assert :ok = ExJsonSchema.Validator.validate(schema, response)
+      assert response["message"] == "OK"
+      assert response["status"] == "1"
+
+      assert [
+               %{
+                 "address" => ^first_address_hash
+               },
+               %{
+                 "address" => ^second_address_hash
+               }
+             ] = response["result"]
+    end
+
     test "with a stale balance", %{conn: conn, params: params} do
       now = Timex.now()
 
@@ -1842,6 +1885,7 @@ defmodule BlockScoutWeb.API.RPC.AddressControllerTest do
           "contractAddress" => "#{contract_address.hash}",
           "input" => "",
           "type" => "#{internal_transaction.type}",
+          "callType" => "#{internal_transaction.call_type}",
           "gas" => "#{internal_transaction.gas}",
           "gasUsed" => "#{internal_transaction.gas_used}",
           "index" => "#{internal_transaction.index}",
@@ -2009,6 +2053,7 @@ defmodule BlockScoutWeb.API.RPC.AddressControllerTest do
           "contractAddress" => "#{contract_address.hash}",
           "input" => "",
           "type" => "#{internal_transaction.type}",
+          "callType" => "#{internal_transaction.call_type}",
           "gas" => "#{internal_transaction.gas}",
           "gasUsed" => "#{internal_transaction.gas_used}",
           "isError" => "0",
@@ -2462,13 +2507,13 @@ defmodule BlockScoutWeb.API.RPC.AddressControllerTest do
     end
 
     test "with contract address and address with existing balance in token_balances table", %{conn: conn} do
-      token_balance = insert(:token_balance)
+      current_token_balance = insert(:address_current_token_balance)
 
       params = %{
         "module" => "account",
         "action" => "tokenbalance",
-        "contractaddress" => to_string(token_balance.token_contract_address_hash),
-        "address" => to_string(token_balance.address_hash)
+        "contractaddress" => to_string(current_token_balance.token_contract_address_hash),
+        "address" => to_string(current_token_balance.address_hash)
       }
 
       assert response =
@@ -2476,7 +2521,7 @@ defmodule BlockScoutWeb.API.RPC.AddressControllerTest do
                |> get("/api", params)
                |> json_response(200)
 
-      assert response["result"] == to_string(token_balance.value)
+      assert response["result"] == to_string(current_token_balance.value)
       assert response["status"] == "1"
       assert response["message"] == "OK"
       assert :ok = ExJsonSchema.Validator.validate(tokenbalance_schema(), response)
@@ -2560,7 +2605,7 @@ defmodule BlockScoutWeb.API.RPC.AddressControllerTest do
     end
 
     test "with address with existing balance in token_balances table", %{conn: conn} do
-      token_balance = :token_balance |> insert() |> Repo.preload(:token)
+      token_balance = :address_current_token_balance |> insert() |> Repo.preload(:token)
 
       params = %{
         "module" => "account",
@@ -2593,9 +2638,9 @@ defmodule BlockScoutWeb.API.RPC.AddressControllerTest do
     test "with address with multiple tokens", %{conn: conn} do
       address = insert(:address)
       other_address = insert(:address)
-      insert(:token_balance, address: address)
-      insert(:token_balance, address: address)
-      insert(:token_balance, address: other_address)
+      insert(:address_current_token_balance, address: address)
+      insert(:address_current_token_balance, address: address)
+      insert(:address_current_token_balance, address: other_address)
 
       params = %{
         "module" => "account",

@@ -1,8 +1,11 @@
 defmodule BlockScoutWeb.TransactionLogControllerTest do
   use BlockScoutWeb.ConnCase
 
+  import Mox
+
   import BlockScoutWeb.WebRouter.Helpers, only: [transaction_log_path: 3]
 
+  alias Explorer.Chain.Address
   alias Explorer.ExchangeRates.Token
 
   describe "GET index/2" do
@@ -42,7 +45,7 @@ defmodule BlockScoutWeb.TransactionLogControllerTest do
       {:ok, %{"items" => items}} = conn.resp_body |> Poison.decode()
       first_log = List.first(items)
 
-      assert String.contains?(first_log, to_string(address.hash))
+      assert String.contains?(first_log, Address.checksum(address.hash))
     end
 
     test "returns logs for the transaction with nil to_address", %{conn: conn} do
@@ -65,7 +68,7 @@ defmodule BlockScoutWeb.TransactionLogControllerTest do
       {:ok, %{"items" => items}} = conn.resp_body |> Poison.decode()
       first_log = List.first(items)
 
-      assert String.contains?(first_log, to_string(address.hash))
+      assert String.contains?(first_log, Address.checksum(address.hash))
     end
 
     test "assigns no logs when there are none", %{conn: conn} do
@@ -154,6 +157,11 @@ defmodule BlockScoutWeb.TransactionLogControllerTest do
   end
 
   test "includes USD exchange rate value for address in assigns", %{conn: conn} do
+    EthereumJSONRPC.Mox
+    |> expect(:json_rpc, fn %{id: _id, method: "net_version", params: []}, _options ->
+      {:ok, "100"}
+    end)
+
     transaction = insert(:transaction)
 
     conn = get(conn, transaction_log_path(BlockScoutWeb.Endpoint, :index, transaction.hash))
@@ -162,6 +170,11 @@ defmodule BlockScoutWeb.TransactionLogControllerTest do
   end
 
   test "loads for transactions that created a contract", %{conn: conn} do
+    EthereumJSONRPC.Mox
+    |> expect(:json_rpc, fn %{id: _id, method: "net_version", params: []}, _options ->
+      {:ok, "100"}
+    end)
+
     contract_address = insert(:contract_address)
 
     transaction =

@@ -10,8 +10,8 @@ $header-textfield-text-color: $header-links-color !default;
 $header-textfield-background-color: #f5f6fa !default;
 $header-textfield-magnifier-color: $header-links-color !default;
 $header-link-horizontal-padding: 0.71rem;
-$navbar-logo-height: 28px !default;
-$navbar-logo-width: auto !default;
+$navbar-logo-height: auto !default;
+$navbar-logo-width: 100% !default;
 
 .navbar.navbar-primary {
   background-color: $header-background-color;
@@ -95,6 +95,7 @@ $navbar-logo-width: auto !default;
   .navbar-toggler {
     outline: none;
     color: $primary;
+    padding-right: 0px;
 
     .navbar-toggler-icon {
       background-image: url($header-toggler-icon);
@@ -208,22 +209,6 @@ $navbar-logo-width: auto !default;
   }
 }
 
-.input-group {
-
-  .awesomplete > ul {
-      overflow-y: auto !important;
-      max-height: 300px !important;
-  }
-
-  .awesomplete mark {
-    background: #feff54 !important;
-  }
-  
-  .awesomplete li:hover mark {
-    background: #feff54 !important;
-  }
-}
-
 .navbar-collapse.collapsing,
 .navbar-collapse.collapse.show {
   display: flex;
@@ -241,12 +226,6 @@ $navbar-logo-width: auto !default;
   }
   .input-group {
     width: 100%;
-
-    .awesomplete {
-      @include media-breakpoint-down(lg) {
-        width: 100%;
-      }
-    }
   }
   .navbar-nav {
     white-space: nowrap;
@@ -263,18 +242,23 @@ $navbar-logo-width: auto !default;
 }
 
 .navbar-logo {
-  height: $navbar-logo-height;
+  max-height: $navbar-logo-height;
   width: $navbar-logo-width;
 }
 
 .logo-text {
   color: #333;
-  font-size: 0.7rem;
+  font-size: 1rem;
+  font-weight: 700;
   margin-left: 5px;
   line-height: 28px;
 
-  &.footer {
+  &.in-footer {
     color: #fff;
+  }
+
+  &.no-logo {
+    margin-left: 0px;
   }
 }
 
@@ -299,7 +283,7 @@ $navbar-logo-width: auto !default;
 }
 
 .navbar-container, .navbar-primary {
-  @include media-breakpoint-up(xl) {
+  @media (min-width: 992px) {
     padding-right: 0;
   }
 }
@@ -312,8 +296,4 @@ $navbar-logo-width: auto !default;
 
 .visually-hidden {
   display: block;
-}
-
-.focused-field {
-  border: 1px solid $secondary !important;
 }
