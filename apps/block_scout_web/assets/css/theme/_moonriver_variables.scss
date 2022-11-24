@@ -1,10 +1,12 @@
 // general
 $primary: #0D1126;
-$secondary: #E1147B;
+$secondary: #F2A007;
 $tertiary: #53CBC9;
-$quaternary: #F2A007;
+$quaternary: #E1147B;
 $quinary: #171E43;
 $additional-font: #fff;
+$additional-font-2: #3A8E8C;
+
 
 // footer
 $footer-background-color: $primary;
@@ -49,16 +51,16 @@ $btn-address-card-icon-color: $secondary; // btn address color
 $btn-contract-color: $secondary;
 
 //links & tile
-$tile-body-a-color: $secondary;
+$tile-body-a-color: $additional-font-2;
 $tile-type-block-color: $secondary;
-$tile-type-progress-bar-color: $secondary;
+$tile-type-progress-bar-color: $additional-font-2;
 a.tile-title { color: $secondary !important; }
 .card-body {  
 	a:not(.dropdown-item):not(.button):not([data-test=address_hash_link]):not(.alert-link):not([data-test=token_link]):not(#dropdown-tokens):not(.btn-line):not(.page-link) {
-		color: $secondary;
+		color: $additional-font-2;
 
 		&:hover {
-			color: $secondary;
+			color: $additional-font-2;
 		}
 	}
 }
@@ -111,11 +113,11 @@ $card-tab-active: $secondary;
 }
 
 .navbar.navbar-primary .navbar-nav .nav-link .nav-link-icon.transactions-menu-item path {
-    fill: $quaternary;
+    fill: $secondary;
 }
 
 .navbar.navbar-primary .navbar-nav .nav-link .nav-link-icon.accounts-menu-item path {
-    fill: $secondary;
+    fill: $quaternary;
 }
 
 .navbar.navbar-primary .navbar-nav .nav-link .nav-link-icon.tokens-menu-item path {
@@ -127,7 +129,7 @@ $card-tab-active: $secondary;
 }
 
 .navbar.navbar-primary .navbar-nav .nav-link .nav-link-icon.apps-menu-item path {
-    fill: $quaternary;
+    fill: $quinary;
 }
 
 .navbar.navbar-primary .navbar-toggler .navbar-toggler-icon {
@@ -182,8 +184,9 @@ $stakes-progress-graph-color: $secondary;
 
 // Dark theme
 $dark-primary: $secondary;
-$dark-secondary: #20a29e;
-$dark-primary-alternate: $tertiary;
+$dark-secondary: #53CBC9;
+$dark-primary-alternate: #E1147B;
+
 
 .dark-theme-applied .tile .tile-body a, .dark-theme-applied .tile span[data-address-hash] {
     color: $dark-secondary!important;
