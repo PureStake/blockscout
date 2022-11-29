@@ -203,6 +203,27 @@ defmodule EthereumJSONRPC.Transaction do
     end
   end
 
+  # Geth pending transactions don't include `r,s,v` transaction fields.
+  def elixir_to_params(
+        %{
+          "blockHash" => _,
+          "blockNumber" => _,
+          "from" => _,
+          "gas" => _,
+          "gasPrice" => _,
+          "hash" => _,
+          "input" => _,
+          "nonce" => _,
+          "to" => _,
+          "transactionIndex" => _,
+          "value" => _
+        } = transaction
+      ) do
+    transaction
+    |> Map.merge(%{"r" => 0, "s" => 0, "v" => 0})
+    |> elixir_to_params()
+  end
+
   # txpool_content method on Erigon node returns tx data
   # without gas price
   def elixir_to_params(
