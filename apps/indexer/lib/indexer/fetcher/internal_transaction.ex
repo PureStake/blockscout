@@ -130,13 +130,21 @@ defmodule Indexer.Fetcher.InternalTransaction do
         import_internal_transaction(internal_transactions_params, filtered_unique_numbers)
 
       {:error, reason} ->
-        Logger.error(fn -> ["failed to fetch internal transactions for blocks: ", inspect(reason)] end,
-          error_count: filtered_unique_numbers_count
-        )
+        if Enum.all?(reason, fn item -> match?(%{ message: "DispatchError: Other(\"\")" }, item) end) do
+          Logger.error(fn -> ["failed to fetch internal transactions for blocks. No substitute tracing for these blocks: ", inspect(reason)] end,
+            error_count: unique_numbers_count
+          )
 
-        # re-queue the de-duped entries
-        {:retry, filtered_unique_numbers}
+          # Exit function without re-queuing the entries
+          :ok
+        else
+          Logger.error(fn -> ["failed to fetch internal transactions for blocks: ", inspect(reason)] end,
+            error_count: unique_numbers_count
+          )
 
+          # re-queue the de-duped entries
+          {:retry, unique_numbers}
+        end
       :ignore ->
         :ok
     end
