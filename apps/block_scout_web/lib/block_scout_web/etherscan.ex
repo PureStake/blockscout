@@ -2916,10 +2916,10 @@ defmodule BlockScoutWeb.Etherscan do
     ]
   }
 
-  @logs_module %{
-    name: "logs",
-    actions: [@logs_getlogs_action]
-  }
+  # @logs_module %{
+  #   name: "logs",
+  #   actions: [@logs_getlogs_action]
+  # }
 
   @token_module %{
     name: "token",
@@ -2971,7 +2971,7 @@ defmodule BlockScoutWeb.Etherscan do
 
   @documentation [
     @account_module,
-    @logs_module,
+    # @logs_module,
     @token_module,
     @stats_module,
     @block_module,
