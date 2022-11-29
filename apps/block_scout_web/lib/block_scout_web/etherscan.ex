@@ -2954,7 +2954,7 @@ defmodule BlockScoutWeb.Etherscan do
       @contract_getsourcecode_action,
       @contract_verify_action,
       @contract_verify_via_sourcify_action,
-      @contract_verify_vyper_contract_action,
+      # @contract_verify_vyper_contract_action,
       @contract_verifysourcecode_action,
       @contract_checkverifystatus_action
     ]
