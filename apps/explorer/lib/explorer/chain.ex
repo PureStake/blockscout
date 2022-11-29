@@ -4594,7 +4594,7 @@ defmodule Explorer.Chain do
     query =
       from(l in Log,
         as: :log,
-        where: l.first_topic == unquote(TokenTransfer.constant()),
+        where: l.first_topic in [unquote(TokenTransfer.constant()), unquote(TokenTransfer.deposit_constant()), unquote(TokenTransfer.withdrawal_constant())],
         where:
           not exists(
             from(tf in TokenTransfer,
