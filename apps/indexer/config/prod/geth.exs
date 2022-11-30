@@ -2,6 +2,10 @@ import Config
 
 config :indexer,
   block_interval: :timer.seconds(5),
+  blocks_batch_size: 4,
+  blocks_concurrency: 2,
+  receipts_batch_size: 50,
+  receipts_concurrency: 4,
   json_rpc_named_arguments: [
     transport:
       if(System.get_env("ETHEREUM_JSONRPC_TRANSPORT", "http") == "http",
